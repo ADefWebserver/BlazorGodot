@@ -1,0 +1,72 @@
+﻿@page "/calljavascript"
+@rendermode InteractiveServer
+@inject IJSRuntime JSRuntime
+<PageTitle>Blazor JavaScript</PageTitle>
+<h4>Call JavaScript</h4>
+<button class="btn btn-primary" hidden=@LoadButtonVisible @onclick="LoadApp">Load App</button>
+<br>
+<h4>@GodotMessage</h4>
+<br>
+<canvas @ref="@GodotCanvas" id="canvas-element" style="width:100%;height:600px;max-width: 2000px">
+    <p>HTML5 canvas appears to be unsupported in the current browser.</p>
+    <p>Please try updating or use a different browser.</p>
+</canvas>
+
+<div id="status">
+    <div id="status-progress" style="display: none;" oncontextmenu="event.preventDefault();">
+        <div id="status-progress-inner"></div>
+    </div>
+    <div id="status-indeterminate" style="display: none;" oncontextmenu="event.preventDefault();">
+    </div>
+    <div id="status-notice" class="godot" style="display: none;"></div>
+</div>
+
+@code {
+    private ElementReference GodotCanvas;
+
+    string GodotMessage = "";
+
+    bool LoadButtonVisible = false;
+
+    string GodotApplicationName = "BlazorJavaScript/BlazorJavaScript";
+    string GodotArgs = "[]";
+
+    // method to run on load of page
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // Load the JavaScript file that the Godot app needs to run
+            await LoadScript(GodotApplicationName + ".js");
+        }
+    }
+
+    private async Task LoadApp()
+    {
+        LoadButtonVisible = true;
+
+        await Interop.CreateGodotApp(
+                JSRuntime,
+                GodotCanvas,
+                GodotApplicationName,
+                GodotArgs);
+    }
+
+    async Task LoadScript(string paramGodotApplicationScript)
+    {
+        var script = await JSRuntime.InvokeAsync<IJSObjectReference>("eval", "document.createElement('script')");
+        await script.InvokeVoidAsync("setAttribute", "src", paramGodotApplicationScript);
+        await script.InvokeVoidAsync("setAttribute", "type", "text/javascript");
+        await script.InvokeVoidAsync("setAttribute", "async", "");
+        await script.InvokeVoidAsync("setAttribute", "defer", "");
+        await JSRuntime.InvokeVoidAsync("document.body.appendChild", script);
+    }
+
+    [JSInvokable("ReceiveCallFromGodot")]
+    public static Task ReceiveCallFromGodot(string godotMessage)
+    {
+        string response = $"Response from Server Side Blazor: You sent {godotMessage} ({godotMessage.Length} characters).";
+
+        return Task.FromResult(response);
+    }
+}
