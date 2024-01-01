@@ -42,6 +42,14 @@ namespace BlazorGodot
                 ContentTypeProvider = provider
             });
 
+            // Godot SharedArrayBuffer support
+            app.Use(async (context, next) =>
+            {
+                context.Response.Headers.Append("Cross-Origin-Opener-Policy", "same-origin");
+                context.Response.Headers.Append("Cross-Origin-Embedder-Policy", "require-corp");
+                await next.Invoke();
+            });
+
             app.UseAntiforgery();
 
             app.MapRazorComponents<App>()
