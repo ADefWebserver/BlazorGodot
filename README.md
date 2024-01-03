@@ -3,4 +3,6 @@
 ### Live example
 ### [https://blazorgodot.azurewebsites.net/](https://blazorgodot.azurewebsites.net/)
 ![image](https://github.com/ADefWebserver/BlazorGodot/assets/1857799/edd643a9-ec6e-4f02-b379-b5d96fc9c84f)
+### Blog Post
+### [Godot and Microsoft Blazor](https://blazorhelpwebsite.com/ViewBlogPost/14069)
 
