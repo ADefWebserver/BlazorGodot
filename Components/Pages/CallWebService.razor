@@ -37,7 +37,7 @@
         // get the base url of the current page
         var baseURI = NavigationManager.BaseUri.Replace("https://", "").Replace("http://", "").Replace("/", "");
 
-        GodotArgs = @$"--WebApplicationURL=https://{baseURI}/,--UserName=TestUser,--HTTPToken=1234ABCD#";
+        GodotArgs = $"--WebApplicationURL=https://{baseURI}/,--UserName=TestUser,--HTTPToken=1234ABCD#";
     }
 
     // method to run on load of page
